@@ -1,0 +1,91 @@
+<!doctype html>
+
+<head>
+ <meta charset="utf-8">
+ <title></title>
+ <meta name="description" content="">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+
+ <link rel="stylesheet" href="css/normalize.css">
+ <link rel="stylesheet" href="css/main.css">
+  
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+<div class="contentLogin" >
+<div class="row" style="margin-right:0px;margin-left:100px;margin-top:100px;">
+ <div><u>Login Funcionário<u>
+ <br><br>
+ <label for="email">Email:</label><input type="email" name="email" id="login_email" required>
+ <br><br>
+ <label for="email">Password:</label><input type="password" name="password" id="login_password" required>
+ <br><br>
+ <button onclick="fazLogin();">Login</button>
+</div>
+</div>
+</div>
+
+
+
+<script>
+var confirm;
+
+function fazLogin()
+{
+	jQuery.ajax(
+	{
+		url: "fazerLogin.php",
+		data: {email: document.getElementById("login_email").value, password: document.getElementById("login_password").value},
+		cache: false,
+		dataType: "text",
+		type : "post",
+		beforeSend: function (jqXHR, settings) 
+		{
+			console.log("--- request start ---");
+		},
+		success: function (data, textStatus, jqXHR) 
+		{
+			console.log("--- request sucess ---");
+			console.log("status: " + jqXHR.status);
+			console.log("data: " + data);
+			
+			try 
+			{
+				confirm = data;
+			} 
+			catch(error) 
+			{
+				console.log("Dados inválidos");
+			}
+		},
+		error: function (jqXHR, textStatus) 
+		{
+			console.log("--- request error ---");
+			console.log("status: " + textStatus);
+			console.log("code: " + jqXHR.status);
+		},
+		complete: function () 
+		{
+			console.log("--- request end ---");
+			//location.reload();
+			
+			if(confirm == "logadoFuncionario") 
+			{
+				window.location.href = "http://localhost/App-Covid-19/stock.html";
+			}
+			else
+			{
+				window.location.href = "http://localhost/App-Covid-19/";
+			}
+		}
+	});
+}
+</script>
+</body>
+
+</html>

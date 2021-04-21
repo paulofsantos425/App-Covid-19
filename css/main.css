@@ -1,0 +1,31 @@
+.contentLogin {
+width: 500px;
+height: 500px;
+border:1px solid black;
+background-color: #add8e6;
+overflow:hidden;
+text-align:left;
+}
+
+.content {
+width: 500px;
+height: 500px;
+border:1px solid black;
+background-color: #add8e6;
+overflow:hidden;
+text-align:center;
+}
+
+.block {
+width: 180px;
+height: 180px;
+border: 1px solid black;
+background-color: white;
+margin: 0 5px 5px 0;
+float:left;
+}
+
+input[type=number]{
+width: 35px;
+text-align:center;
+} 

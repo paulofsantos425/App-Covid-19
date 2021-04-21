@@ -1,0 +1,210 @@
+<!doctype html>
+
+<head>
+ <meta charset="utf-8">
+ <title></title>
+ <meta name="description" content="">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+
+ <link rel="stylesheet" href="css/normalize.css">
+ <link rel="stylesheet" href="css/main.css">
+  
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body onload="load()">
+<div class="content">
+<div class="row" style="margin-right:0px;margin-left:0px;">
+ <div class="block"><img src="img/fato.jpg" width="60" height="60"><div><b>Qtd:</b><input id="produto1qtd" type="number" value="0" min="0"></div><div id="esgotado1"></div></div>
+ <div class="block"><img src="img/luvas.jpg" width="60" height="60"><div><b>Qtd:</b><input id="produto2qtd" type="number" value="0" min="0"></div><div id="esgotado2"></div></div>
+ <div style="margin-top:50px;"><button onclick="reporNovoStock();">Repor Stock</button></div>
+ <div style="margin-top:50px;"><button onclick="cancel();">Cancelar</button></div>
+ <div class="block"><img src="img/gel.jpg" width="60" height="60"><div><b>Qtd:</b><input id="produto3qtd" type="number" value="0" min="0"></div><div id="esgotado3"></div></div>
+ <div class="block"><img src="img/mascara.jpg" width="60" height="60"><div><b>Qtd:</b><input id="produto4qtd" type="number" value="0" min="0"></div><div id="esgotado4"></div></div>
+</div>
+
+<div class="row" style="margin-top:15px;text-align:left;margin-left:5px;margin-right:0px;">
+ <div style="display:flex;"><b>Número do Funcionário:&nbsp;</b><div style="width:245px;margin:0px;" id="numeroFuncionario"></div></div>
+ <br><br>
+ <!-- meter logout que está a FAV no opera --> 
+ <b><a href="fazerLogout.php"><u>Logout<u></a></b>
+</div>
+</div>
+
+
+
+<script>
+function load()
+{
+	obtemDadosFuncionarios();
+	obtemStockProdutos();
+}
+
+var dadosFuncionarios;
+
+function obtemDadosFuncionarios()
+{
+	jQuery.ajax(
+	{
+		url: "obtemDadosFuncionarios.php",
+		cache: false,
+		dataType: "text",
+		beforeSend: function (jqXHR, settings) 
+		{
+			console.log("--- request start ---");
+		},
+		success: function (data, textStatus, jqXHR) 
+		{
+			console.log("--- request sucess ---");
+			console.log("status: " + jqXHR.status);
+			console.log("data: " + data);
+			
+			try 
+			{
+				dadosFuncionarios = JSON.parse(data);
+				
+				document.getElementById("numeroFuncionario").innerText = dadosFuncionarios[0]["anumber"];				
+			}
+			catch(error) 
+			{
+				console.log("Dados inválidos");
+			}
+		},
+		error: function (jqXHR, textStatus) 
+		{
+			console.log("--- request error ---");
+			console.log("status: " + textStatus);
+			console.log("code: " + jqXHR.status);
+		},
+		complete: function () 
+		{
+			console.log("--- request end ---");
+		}
+	});
+}
+
+var dadosStock;
+
+function obtemStockProdutos()
+{
+	jQuery.ajax(
+	{
+		url: "obtemStockProdutos.php",
+		cache: false,
+		dataType: "text",
+		beforeSend: function (jqXHR, settings) 
+		{
+			console.log("--- request start ---");
+		},
+		success: function (data, textStatus, jqXHR) 
+		{
+			console.log("--- request sucess ---");
+			console.log("status: " + jqXHR.status);
+			console.log("data: " + data);
+			
+			try 
+			{
+				dadosStock = JSON.parse(data);
+				
+				document.getElementById("produto1qtd").value = dadosStock[0]["pquantity"];		
+				document.getElementById("produto2qtd").value = dadosStock[1]["pquantity"];
+				document.getElementById("produto3qtd").value = dadosStock[2]["pquantity"];
+				document.getElementById("produto4qtd").value = dadosStock[3]["pquantity"];	
+			}
+			catch(error) 
+			{
+				console.log("Dados inválidos");
+			}
+		},
+		error: function (jqXHR, textStatus) 
+		{
+			console.log("--- request error ---");
+			console.log("status: " + textStatus);
+			console.log("code: " + jqXHR.status);
+		},
+		complete: function () 
+		{
+			console.log("--- request end ---");
+			
+			if(document.getElementById("produto1qtd").value == 0) 
+			{
+				document.getElementById("esgotado1").innerText = "*Esgotado";
+				document.getElementById("esgotado1").style.color = "red";				
+			}
+			
+			if(document.getElementById("produto2qtd").value == 0)
+			{
+				document.getElementById("esgotado2").innerText = "*Esgotado";
+				document.getElementById("esgotado2").style.color = "red";
+			}
+			
+			if(document.getElementById("produto3qtd").value == 0)
+			{
+				document.getElementById("esgotado3").innerText = "*Esgotado";
+				document.getElementById("esgotado3").style.color = "red";
+			}
+			
+			if(document.getElementById("produto4qtd").value == 0) 
+			{
+				document.getElementById("esgotado4").innerText = "*Esgotado";
+				document.getElementById("esgotado4").style.color = "red";
+			}
+		}
+	});
+}
+
+function reporNovoStock()
+{	
+	jQuery.ajax(
+	{
+		url: "adicionarReposicoesStock.php",
+		data: {fatos : document.getElementById("produto1qtd").value, luvas : document.getElementById("produto2qtd").value, gel : document.getElementById("produto3qtd").value, mascaras : document.getElementById("produto4qtd").value},
+		method: "POST",
+		cache: false,
+		dataType: "text",
+		beforeSend: function (jqXHR, settings) 
+		{
+			console.log("--- request start ---");
+		},
+		success: function (data, textStatus, jqXHR) 
+		{
+			console.log("--- request sucess ---");
+			console.log("status: " + jqXHR.status);
+			console.log("data: " + data);
+			
+			try 
+			{	
+			}
+			catch(error) 
+			{
+				console.log("Dados inválidos");
+			}
+		},
+		error: function (jqXHR, textStatus) 
+		{
+			console.log("--- request error ---");
+			console.log("status: " + textStatus);
+			console.log("code: " + jqXHR.status);
+		},
+		complete: function () 
+		{
+			console.log("--- request end ---");
+			
+			location.reload();
+		}
+	});
+}
+
+function cancel()
+{
+	location.reload();
+}
+</script>
+
+</body>
+
+</html>
