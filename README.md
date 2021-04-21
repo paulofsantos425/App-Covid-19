@@ -9,12 +9,17 @@ Database name: dbappcovid19
 ##################################################################
 
 phpMyAdmin User Account:
+
 Hostname: Any host
+
 Username: appcovid19
+
 Password: 12345678
 
 ##################################################################
 
 Dados para fazer login como funcionário:
+
 Email: jose@email.com
+
 Password: 12345678
